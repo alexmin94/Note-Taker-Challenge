@@ -53,6 +53,32 @@ app.post('/api/notes', (req, res) => {
       }
     });
   });
+  app.delete("/api/notes/:id",(req,res)=>{
+    const noteId=parseInt(req.params.id)
+    fs.readFile(path.join(__dirname,"db/db.json"),"utf8",(err,data)=>{
+        if(err){
+            console.error(err)
+            res.status(500).json({error:"failed to read"})
+        }else{
+            const notes=JSON.parse(data)
+            const noteIndex=notes.findIndex(note => note.id===noteId)
+            if(noteIndex !== -1){
+                notes.splice(noteIndex,1)
+                fs.writeFile(path.join(__dirname,"db/db.json"),JSON.stringify(notes),"utf8",(err)=>{
+                    if(err){
+                        console.error(err)
+                        res.status(500).json({error:"failed to delete"})
+
+                    }else{
+                        res.status(200).json({message:"deleted successfully"})
+                    }
+                })
+            }else{
+                res.status(404).json({error:"note not found"})
+            }
+        }
+    })
+  })
 
 app.listen(PORT,()=>console.log(`listening on port ${PORT}`))
 
