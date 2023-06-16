@@ -26,5 +26,33 @@ if(error){
     })
 })
 
+app.post('/api/notes', (req, res) => {
+    fs.readFile(path.join(__dirname, 'db/db.json'), 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to read notes' });
+      } else {
+        const notes = JSON.parse(data);
+        const newNote = req.body;
+  
+        // Assign a unique ID to the new note
+        newNote.id = Date.now();
+  
+        // Add the new note to the array
+        notes.push(newNote);
+  
+        // Write the updated notes array back to the file
+        fs.writeFile(path.join(__dirname, 'db/db.json'), JSON.stringify(notes), 'utf8', (err) => {
+          if (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Failed to create note' });
+          } else {
+            res.status(201).json(newNote);
+          }
+        });
+      }
+    });
+  });
 
 app.listen(PORT,()=>console.log(`listening on port ${PORT}`))
+
