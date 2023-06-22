@@ -1,4 +1,4 @@
-# ReadMe Generator
+# Note Taker Challenge
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
 
 
